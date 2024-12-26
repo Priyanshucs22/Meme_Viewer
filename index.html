@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .container{
+            display: flex;
+            align-items: center;
+        }
+        #movies{
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        #in{
+            width: 2000px;
+        }
+        #btn{
+            background-color: blue;
+            color: white;
+        }
+        .movie {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .movie img {
+            width: 100px;
+            height: auto;
+        }
+        .movie h2 {
+            font-size: 14px;
+            text-align: center;
+            margin: 10px 0 0 0;
+        }
+    </style>
+</head>
+<body>
+    <h2>TV Show Search</h2>
+    <div class="container">
+        <input type="text" id="in" placeholder="search">
+        <button type="submit" id="btn">search</button>
+    </div>
+    <div id="movies"></div>
+    <script>
+        let inpBox = document.getElementById("in");
+        let button = document.getElementById("btn");
+        let moviesDetails = document.getElementById("movies");
+
+        button.addEventListener('click', () => {
+            let inpValue = inpBox.value;
+            console.log(inpValue);
+            console.log("Button Clicked");
+            fetch(`https://api.tvmaze.com/search/shows?q=${inpValue}`)
+            .then((res) => res.json())
+            .then((data) => {
+                let movies = data;
+                moviesDetails.innerHTML = ""; // Clear previous results
+                movies.forEach((movieObj) => {
+                    let movie = movieObj.show;
+                    let imgURL = movie.image ? movie.image.medium : '';
+                    let img = document.createElement('img');
+                    let title = document.createElement('h2');
+
+                    title.innerText = movie.name;
+                    img.src = imgURL;
+                    img.classList.add('img');
+
+                    let movieDiv = document.createElement('div');
+                    movieDiv.classList.add('movie');
+                    movieDiv.appendChild(img);
+                    movieDiv.appendChild(title);
+                    
+                    moviesDetails.appendChild(movieDiv);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
